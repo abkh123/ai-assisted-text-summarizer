@@ -1,0 +1,11 @@
+### Test POST /articles
+POST http://localhost:3000/articles
+Content-Type: application/json
+
+{
+  "title": "First Article",
+  "content": "This is the content of my first article."
+}
+
+### Test GET /articles
+GET http://localhost:3000/articles

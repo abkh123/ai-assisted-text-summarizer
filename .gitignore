@@ -1,0 +1,25 @@
+# Node.js Dependencies
+node_modules/
+
+# Logs
+logs
+*.log
+
+# Environment Variables
+.env
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Python related (future use)
+__pycache__/
+*.pyc
+
+# IDE settings (VSCode)
+.vscode/
+*.code-workspace
+
+# Temporary files
+tmp/
+temp/

@@ -27,4 +27,4 @@ temp/
 
 # Environment variables
 .env
-_notes.txt
+misc/

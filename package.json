@@ -1,0 +1,15 @@
+{
+  "name": "ai_content_publisher",
+  "version": "1.0.0",
+  "description": "AI-Assisted Content Publisher backend project using Node.js and Express.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "abkh",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

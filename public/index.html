@@ -12,43 +12,87 @@
 <head>
   <meta charset="UTF-8">
   <title>AI-Assisted Content Publisher</title>
-  <style>
+  <!-- <style>
     body { font-family: Arial; max-width: 600px; margin: 20px auto; padding: 10px; }
     textarea, input { width: 100%; margin-top: 10px; padding: 8px; font-size: 1em; }
     button { padding: 10px 15px; margin-top: 10px; font-size: 1em; }
     #result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
+  </style> -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f8f8;
+    }
+  
+    .container {
+      padding: 30px 5%;
+    }
+  
+    h2 {
+      margin-bottom: 10px;
+    }
+  
+    textarea, input {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+  
+    button {
+      padding: 12px 20px;
+      margin-top: 10px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+  
+    #result {
+      margin-top: 30px;
+      padding: 20px;
+      background: #fff;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
   </style>
 </head>
+
 <body>
-  <h2>AI-Assisted Article Submission</h2>
-  
-  <label for="title">Title:</label>
-  <input type="text" id="title" placeholder="Enter article title">
+  <div class="container">
+    <h2>AI Text Summarizer</h2>
 
-  <label for="content">Content:</label>
-  <textarea id="content" rows="8" placeholder="Write your article here..."></textarea>
+    <label for="content">Enter any text:</label>
+    <textarea id="content" rows="12" placeholder="Paste or write something you'd like summarized..."></textarea>
 
-  <button onclick="submitArticle()">Submit Article</button>
+    <button onclick="submitArticle()">Submit Article</button>
 
-  <div id="result"></div>
+    <div id="result"></div>
+  </div>
 
   <script>
     async function submitArticle() {
-      const title = document.getElementById("title").value;
       const content = document.getElementById("content").value;
 
       const response = await fetch("http://localhost:3000/articles", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content })
+        body: JSON.stringify({ title: "Untitled", content })
       });
 
       const resultDiv = document.getElementById("result");
       const data = await response.json();
 
       if (response.ok) {
+        let warningMessage = "";
+        if (data.truncated) {
+          warningMessage = `<p style="color: orange;"><strong>⚠️ Note:</strong> Your input was too long and was truncated before summarization.</p>`;
+        }
+
         resultDiv.innerHTML = `
-          <h3>Summary Generated:</h3>
+          ${warningMessage}
+          <h3>Summary:</h3>
           <p><strong>Title:</strong> ${data.article.title}</p>
           <p><strong>Summary:</strong> ${data.article.summary}</p>
         `;

@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 /**
  * @file server.js
- * @description This server handles article uploads and generates summaries using AI.
+ * @description Backend server for AI-Assisted Content Publisher
  * @encoding utf-8
- * @author [abkh]
- * @version 1.2.0
- * @license MIT
- * @date [2024]
+ * @author abkh
+ * @version 1.2
+ * @date May 2024
  */
 
 const express = require('express');
@@ -16,48 +15,54 @@ const { exec } = require('child_process');
 const app = express();
 const PORT = 3000;
 
-// Middleware to parse JSON
+// Serve frontend
+app.use(express.static('public'));
+
+// Parse JSON
 app.use(bodyParser.json());
 
-// Temporary storage for articles
+// In-memory storage
 let articles = [];
 
 /**
- * Helper function to generate summary via Python script
+ * Call Python script and parse JSON output
  */
 function generateAISummary(content) {
   return new Promise((resolve, reject) => {
-    const sanitizedContent = content.replace(/"/g, '\\"'); // Prevent quotation issues
+    const sanitizedContent = content.replace(/"/g, '\\"');
 
-    exec(`python ai_helper.py "${sanitizedContent}"`, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        reject(error);
-        return;
+    exec(`python ai_helper_together.py "${sanitizedContent}"`, (error, stdout, stderr) => {
+      if (error || stderr) {
+        console.error("Python error:", error || stderr);
+        return reject("Failed to summarize.");
       }
-      if (stderr) {
-        console.error(`stderr: ${stderr}`);
-        reject(stderr);
-        return;
+
+      try {
+        const parsed = JSON.parse(stdout);
+        resolve({
+          summary: parsed.summary,
+          truncated: parsed.truncated
+        });
+      } catch (e) {
+        console.error("Failed to parse Python output:", stdout);
+        reject("Invalid summary format.");
       }
-      resolve(stdout.trim());
     });
   });
 }
 
-app.use(express.static('public'));
 /**
- * POST route to upload an article and generate AI summary
+ * POST /articles - Save content + generate summary
  */
 app.post('/articles', async (req, res) => {
-  const { title, content } = req.body;
+  const { title = "Untitled", content } = req.body;
 
-  if (!title || !content) {
-    return res.status(400).json({ error: 'Title and content are required.' });
+  if (!content) {
+    return res.status(400).json({ error: "Content is required." });
   }
 
   try {
-    const summary = await generateAISummary(content);
+    const { summary, truncated } = await generateAISummary(content);
 
     const newArticle = {
       id: articles.length + 1,
@@ -71,27 +76,22 @@ app.post('/articles', async (req, res) => {
 
     res.status(201).json({
       message: 'Article uploaded and summary generated successfully.',
-      article: newArticle
+      article: newArticle,
+      truncated
     });
-
   } catch (err) {
-    res.status(500).json({ error: 'Failed to generate summary.' });
+    res.status(500).json({ error: err.toString() });
   }
 });
 
 /**
- * GET route to retrieve all articles.
+ * GET /articles - Return stored summaries
  */
 app.get('/articles', (req, res) => {
   res.json({ articles });
 });
 
-// Root route (for quick testing)
-app.get('/', (req, res) => {
-  res.send('AI-Assisted Content Publisher Backend Running!');
-});
-
-// Server start
+// Start server
 app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });

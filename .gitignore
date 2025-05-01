@@ -15,6 +15,7 @@ Thumbs.db
 # Python related (future use)
 __pycache__/
 *.pyc
+venv/
 
 # IDE settings (VSCode)
 .vscode/
@@ -23,3 +24,6 @@ __pycache__/
 # Temporary files
 tmp/
 temp/
+
+# Environment variables
+.env

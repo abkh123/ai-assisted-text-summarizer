@@ -4,7 +4,7 @@
 ai_helper.py
 A Python script for interacting with OpenAI's GPT API to generate article summaries.
 Author: abkh
-Date: May 2025
+Date: May 2024
 """
 
 from  openai import OpenAI

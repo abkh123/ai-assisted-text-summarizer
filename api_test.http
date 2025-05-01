@@ -3,9 +3,22 @@ POST http://localhost:3000/articles
 Content-Type: application/json
 
 {
-  "title": "First Article",
-  "content": "This is the content of my first article."
+  "title": "AI Article",
+  "content": "AI transforms how content is created, edited, and distributed by streamlining the workflow significantly."
 }
+
 
 ### Test GET /articles
 GET http://localhost:3000/articles
+
+### Expected response:
+# {
+#   "message": "Article uploaded and summary generated successfully.",
+#   "article": {
+#     "id": 1,
+#     "title": "AI Article",
+#     "content": "Artificial Intelligence transforms how content is created, edited, and distributed by streamlining the workflow significantly.",
+#     "summary": "Artificial Intelligence significantly streamlines content creation, editing, and distribution processes.",
+#     "date": "2024-05-01T14:00:00.000Z"
+#   }
+# }

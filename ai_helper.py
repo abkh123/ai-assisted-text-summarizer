@@ -4,7 +4,7 @@
 ai_helper.py
 A Python script interacting with Hugging Face API to generate article summaries.
 Author: abkh
-Date: May, 2025
+Date: May, 2024
 """
 
 import os

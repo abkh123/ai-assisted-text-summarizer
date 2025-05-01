@@ -45,6 +45,7 @@ function generateAISummary(content) {
   });
 }
 
+app.use(express.static('public'));
 /**
  * POST route to upload an article and generate AI summary
  */
